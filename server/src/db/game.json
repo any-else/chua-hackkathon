@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "listPlayer": [
+      {
+        "name": "Nguyen Van A",
+        "final-score": 0
+      },
+      {
+        "name": "Nguyen Van B",
+        "final-score": 0
+      },
+      {
+        "name": "Nguyen Van C",
+        "final-score": 0
+      },
+      {
+        "name": "Nguyen Van D",
+        "final-score": 0
+      }
+    ],
+    "rounds": [
+      {
+        "id": 1,
+        "point-round": [
+          {
+            "name": "Nguyen Van A",
+            "round-score": 0
+          },
+          {
+            "name": "Nguyen Van B",
+            "round-score": 0
+          },
+          {
+            "name": "Nguyen Van C",
+            "round-score": 0
+          },
+          {
+            "name": "Nguyen Van D",
+            "round-score": 0
+          }
+        ]
+      }
+    ]
+  }
+]
