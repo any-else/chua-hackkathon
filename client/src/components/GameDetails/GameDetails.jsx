@@ -3,14 +3,15 @@ import "./GameDetails.css";
 import { GameAPI } from "../../api/gameApi";
 import { useLocation, useParams } from "react-router-dom";
 import RoundGame from "../RoundGame/RoundGame";
+import { handleCalcPoint } from "../../helpers/calcPoint";
 const GameDetails = () => {
   const params = useParams();
   const location = useLocation();
   let game = location.state.data;
   const [games, setGames] = React.useState(game);
-  const [total, setTotal] = React.useState(0);
   const [round, setRound] = React.useState([]);
   const [isCall, setIsCall] = React.useState(true);
+  const [isPut, setIsPut] = React.useState(false);
   const point = {
     player1: 0,
     player2: 0,
@@ -54,6 +55,28 @@ const GameDetails = () => {
     };
   }, [isCall]);
 
+  React.useEffect(() => {
+    const handlePutApi = async () => {
+      await GameAPI.postRoundGame(games);
+    };
+    if (isPut) {
+      handlePutApi();
+    }
+    return () => {
+      setIsPut(false);
+    };
+  }, [isPut]);
+
+  const playerPoint = handleCalcPoint(games.rounds);
+
+  const handleChangePoint = (roundPoint) => {
+    const index = games.rounds.findIndex((round) => round.id == roundPoint.id);
+    setGames({
+      ...games,
+      [games.rounds]: [...games.rounds, (games.rounds[index] = roundPoint)],
+    });
+    setIsPut(true);
+  };
   return (
     <div className="wrapper">
       <table className="main-table">
@@ -67,30 +90,21 @@ const GameDetails = () => {
           </tr>
           <tr className="thead-bot">
             <th className="scores">
-              Sum of course <span className="total-score">{total}</span>
+              Sum of course{" "}
+              <span className="total-score">{playerPoint.totalPoint || 0}</span>
             </th>
             <th className="score-play-1">
-              {games.rounds.reduce((prev, next) => {
-                return prev + next.point.player1;
-              }, 0) || point.player1}
+              {playerPoint.playerPoint1 || point.player1}
             </th>
             <th className="score-play-2">
               {" "}
-              {games.rounds.reduce((prev, next) => {
-                return prev + next.point.player2;
-              }, 0) || point.player2}
+              {playerPoint.playerPoint2 || point.player2}
             </th>
             <th className="score-play-3">
-              {" "}
-              {games.rounds.reduce((prev, next) => {
-                return prev + next.point.player3;
-              }, 0) || point.player3}
+              {playerPoint.playerPoint3 || point.player3}
             </th>
             <th className="score-play-4">
-              {" "}
-              {games.rounds.reduce((prev, next) => {
-                return prev + next.point.player4;
-              }, 0) || point.player4}
+              {playerPoint.playerPoint4 || point.player4}
             </th>
           </tr>
         </thead>
@@ -100,10 +114,8 @@ const GameDetails = () => {
               return (
                 <RoundGame
                   roundPoint={roundPoint}
-                  games={games}
-                  setGames={setGames}
+                  onChangePoint={handleChangePoint}
                   index={index}
-                  setIsCall={setIsCall}
                 />
               );
             })}

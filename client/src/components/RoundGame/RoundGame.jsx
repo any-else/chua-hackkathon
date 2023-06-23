@@ -1,9 +1,13 @@
 import React from "react";
-import { GameAPI } from "../../api/gameApi";
+import { debounce } from "lodash-es";
 
 const RoundGame = (props) => {
-  const { roundPoint, index, setIsCall, games, setGames } = props;
+  const { roundPoint, index, onChangePoint } = props;
   const [pointValue, setPointValue] = React.useState(roundPoint);
+
+  React.useEffect(() => {
+    onChangePoint(pointValue);
+  }, [pointValue]);
 
   const handleOnChange = (e) => {
     setPointValue({
@@ -21,7 +25,7 @@ const RoundGame = (props) => {
           id="input-score-player1"
           name="player1"
           value={pointValue.point.player1 || 0}
-          onInput={handleOnChange}
+          onChange={handleOnChange}
         />
       </td>
       <td>
