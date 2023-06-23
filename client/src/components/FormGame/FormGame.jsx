@@ -47,28 +47,28 @@ const FormGame = () => {
           className="input-player1"
           placeholder="Enter Player Name"
           name="player1"
-          onChange={debounce(handleOnChange, 1000)}
+          onChange={debounce(handleOnChange, 600)}
         />
         <input
           type="text"
           className="input-player2"
           name="player2"
           placeholder="Enter Player Name"
-          onChange={debounce(handleOnChange, 1000)}
+          onChange={debounce(handleOnChange, 600)}
         />
         <input
           type="text"
           className="input-player3"
           placeholder="Enter Player Name"
           name="player3"
-          onChange={debounce(handleOnChange, 1000)}
+          onChange={debounce(handleOnChange, 600)}
         />
         <input
           type="text"
           className="input-player4"
           name="player4"
           placeholder="Enter Player Name"
-          onChange={debounce(handleOnChange, 1000)}
+          onChange={debounce(handleOnChange, 600)}
         />
         <p className="error-player">Thông báo lỗi</p>
         <button type="submit">Create Game</button>

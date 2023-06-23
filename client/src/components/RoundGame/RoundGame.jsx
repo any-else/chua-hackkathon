@@ -1,24 +1,37 @@
 import React from "react";
+import { GameAPI } from "../../api/gameApi";
 
 const RoundGame = (props) => {
-  const { roundPoint, index } = props;
+  const { roundPoint, index, setIsCall, games, setGames } = props;
+  const [pointValue, setPointValue] = React.useState(roundPoint);
+
+  const handleOnChange = (e) => {
+    setPointValue({
+      ...pointValue,
+      point: { ...pointValue.point, [e.target.name]: Number(e.target.value) },
+    });
+  };
+
   return (
     <tr className="rounds">
       <td>Round {index + 1} </td>
       <td>
-        {" "}
         <input
           type="number"
           id="input-score-player1"
-          value={roundPoint.point.player1 || 0}
+          name="player1"
+          value={pointValue.point.player1 || 0}
+          onInput={handleOnChange}
         />
       </td>
       <td>
         {" "}
         <input
           type="number"
+          name="player2"
           id="input-score-player2"
-          value={roundPoint.point.player2 || 0}
+          value={pointValue.point.player2}
+          onChange={handleOnChange}
         />{" "}
       </td>
       <td>
@@ -26,15 +39,19 @@ const RoundGame = (props) => {
         <input
           type="number"
           id="input-score-player3"
-          value={roundPoint.point.player3 || 0}
+          name="player3"
+          value={pointValue.point.player3}
+          onChange={handleOnChange}
         />{" "}
       </td>
       <td>
         {" "}
         <input
           type="number"
+          name="player4"
           id="input-score-player4"
-          value={roundPoint.point.player || 0}
+          value={pointValue.point.player4}
+          onChange={handleOnChange}
         />{" "}
       </td>
     </tr>

@@ -4,11 +4,13 @@ import { GameAPI } from "../../api/gameApi";
 import { useLocation, useParams } from "react-router-dom";
 import RoundGame from "../RoundGame/RoundGame";
 const GameDetails = () => {
+  const params = useParams();
   const location = useLocation();
-  const game = location.state.data;
-  const [roundGame, setRoundGame] = React.useState(game);
+  let game = location.state.data;
+  const [games, setGames] = React.useState(game);
   const [total, setTotal] = React.useState(0);
   const [round, setRound] = React.useState([]);
+  const [isCall, setIsCall] = React.useState(true);
   const point = {
     player1: 0,
     player2: 0,
@@ -23,15 +25,34 @@ const GameDetails = () => {
       point: { ...point },
     };
 
-    setRound([...round, newRound]);
-
     //thuc hien tao new => add data vao state route
-    game.rounds = [...round, newRound];
+    let updateGame = {
+      ...games,
+      rounds: [...games.rounds, newRound],
+    };
     //dua len server
-    const response = await GameAPI.postRoundGame(game);
+    const response = await GameAPI.postRoundGame(updateGame);
     const data = response.data;
-    setRoundGame(data);
+    setGames(data);
+    setRound([...round, newRound]);
   };
+
+  React.useEffect(() => {
+    const handleCallById = async () => {
+      const response = await GameAPI.getById(params.id);
+      const data = await response.data;
+      setGames(data);
+      setRound(data.rounds);
+    };
+    if (isCall) {
+      setTimeout(() => {
+        handleCallById();
+      }, 1000);
+    }
+    return () => {
+      setIsCall(false);
+    };
+  }, [isCall]);
 
   return (
     <div className="wrapper">
@@ -39,25 +60,52 @@ const GameDetails = () => {
         <thead>
           <tr className="thead-top">
             <th className="number-no">#</th>
-            <th className="player-name1">{roundGame.listPlayer.player1}</th>
-            <th className="player-name2">{roundGame.listPlayer.player2}</th>
-            <th className="player-name3">{roundGame.listPlayer.player3}</th>
-            <th className="player-name4">{roundGame.listPlayer.player4}</th>
+            <th className="player-name1">{games.listPlayer.player1}</th>
+            <th className="player-name2">{games.listPlayer.player2}</th>
+            <th className="player-name3">{games.listPlayer.player3}</th>
+            <th className="player-name4">{games.listPlayer.player4}</th>
           </tr>
           <tr className="thead-bot">
             <th className="scores">
               Sum of course <span className="total-score">{total}</span>
             </th>
-            <th className="score-play-1">{point.player1}</th>
-            <th className="score-play-2">{point.player2}</th>
-            <th className="score-play-3">{point.player3}</th>
-            <th className="score-play-4">{point.player4}</th>
+            <th className="score-play-1">
+              {games.rounds.reduce((prev, next) => {
+                return prev + next.point.player1;
+              }, 0) || point.player1}
+            </th>
+            <th className="score-play-2">
+              {" "}
+              {games.rounds.reduce((prev, next) => {
+                return prev + next.point.player2;
+              }, 0) || point.player2}
+            </th>
+            <th className="score-play-3">
+              {" "}
+              {games.rounds.reduce((prev, next) => {
+                return prev + next.point.player3;
+              }, 0) || point.player3}
+            </th>
+            <th className="score-play-4">
+              {" "}
+              {games.rounds.reduce((prev, next) => {
+                return prev + next.point.player4;
+              }, 0) || point.player4}
+            </th>
           </tr>
         </thead>
         <tbody>
           {round.length != 0 &&
             round.map((roundPoint, index) => {
-              return <RoundGame roundPoint={roundPoint} index={index} />;
+              return (
+                <RoundGame
+                  roundPoint={roundPoint}
+                  games={games}
+                  setGames={setGames}
+                  index={index}
+                  setIsCall={setIsCall}
+                />
+              );
             })}
         </tbody>
       </table>

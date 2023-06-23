@@ -16,7 +16,6 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  console.log(req.body);
   fs.readFile(pathData, (err, data) => {
     if (err) {
       return res.status(500).json({ message: "Loi Server" });
